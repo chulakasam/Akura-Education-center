@@ -1,6 +1,6 @@
 import { FaUsers, FaBook, FaChalkboardTeacher, FaClipboardList } from "react-icons/fa";
 import { motion } from "framer-motion";
-import bgImage from "../assets/edu-bg-img-02.jpg";
+import bgImage from "../assets/edu-bg-img -01.jpg";
 
 export function Dashboard() {
     return (
