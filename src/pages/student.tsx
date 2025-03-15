@@ -33,7 +33,6 @@ export function Student() {
 
 
 
-
             <div className="relative bg-white bg-opacity-90 p-8 rounded-lg shadow-xl w-full max-w-md md:max-w-lg ml-10">
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">Add a New Student</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">

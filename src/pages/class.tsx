@@ -1,11 +1,18 @@
 import { useState } from "react";
 import bgImage from "../assets/edu-bg-img-02.jpg";
+import {useDispatch, useSelector} from "react-redux";
+
+import {AppDispatch} from "../store/store.ts";
+import {saveClass} from "../slice/class-reducer.ts";
+import Classes from "../model/Class.ts";
 
 export function Class() {
     const [className, setClassName] = useState("");
     const [teacherName, setTeacherName] = useState("");
     const [description, setDescription] = useState("");
     const [classDate, setClassDate] = useState("");
+    const classes= useSelector((state: any) => state.class);
+    const dispatch = useDispatch<AppDispatch>();
 
     const subjects = ["Accounting", "Biology", "Chemistry", "Physics", "Economics", "Business Studies"];
 
@@ -30,11 +37,15 @@ export function Class() {
         console.log("Submitted Data:", { className, teacherName, description, classDate });
         alert("Class added successfully!");
 
+        const newClass = new Classes(className,teacherName,description,classDate);
+
+        dispatch(saveClass(newClass))
 
         setClassName("");
         setTeacherName("");
         setDescription("");
         setClassDate("");
+
     };
 
     return (
