@@ -1,5 +1,9 @@
 import { useState } from "react";
 import bgImage from "../assets/edu-bg-img-02.jpg";
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "../store/store.ts";
+import {saveStudent} from "../slice/student-reducer.ts";
+import Students from "../model/student.ts";
 
 export function Student() {
     const [studentName, setStudentName] = useState("");
@@ -9,11 +13,16 @@ export function Student() {
     const [email, setEmail] = useState("");
     const [mobileNo, setMobileNo] = useState("");
     const [guardianContactNo, setGuardianContactNo] = useState("");
+    const dispatch = useDispatch<AppDispatch>();
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Student Data:", { studentName, nic, dob, address, email, mobileNo, guardianContactNo });
         alert("Student added successfully!");
+
+        const student = new Students(studentName, Number(nic), dob, address, email, Number(mobileNo),Number(guardianContactNo));
+        dispatch(saveStudent(student));
+
 
         // Reset form after submission
         setStudentName("");
