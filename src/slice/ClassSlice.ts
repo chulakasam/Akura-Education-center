@@ -1,12 +1,13 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
-import Class from "../model/Class.ts";
+
+import Classes from "../model/Classes.ts";
 
 
 
 
 
-const initialState:Class[] = [];
+const initialState:Classes[] = [];
 
 
 const api = axios.create({
@@ -17,7 +18,7 @@ const api = axios.create({
 
 export const saveClass = createAsyncThunk(
     "class/add",
-    async (classes:Class, { rejectWithValue }) => {
+    async (classes:Classes, { rejectWithValue }) => {
         try {
             const response = await api.post("/add", classes);
             return response.data;
@@ -27,6 +28,18 @@ export const saveClass = createAsyncThunk(
     }
 );
 
+export const getAllClasses=createAsyncThunk(
+    "class/view",
+    async ()=>{
+        try {
+            const response = await api.get("/view");
+            return response.data;
+        }catch (error:any){
+            return error.response?.data || error.message;
+        }
+
+    }
+)
 
 const ClassSlice = createSlice({
     name: 'class',
@@ -39,6 +52,10 @@ const ClassSlice = createSlice({
         builder
             .addCase(saveClass.fulfilled, (state, action) => {
                 state.push(action.payload);
+            })
+            .addCase(getAllClasses.fulfilled, (state, action)=>{
+                console.log("Fetched Classes:", action.payload);
+                return action.payload;
             })
 
     }
