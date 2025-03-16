@@ -11,7 +11,7 @@ const initialState:Student[] = [];
 
 
 const api = axios.create({
-    baseURL: "http://localhost:3000/student",
+    baseURL: "http://localhost:3001/student",
 });
 
 

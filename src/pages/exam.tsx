@@ -1,5 +1,9 @@
 import { useState } from "react";
 import bgImage from "../assets/edu-bg-img-02.jpg";
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "../store/store.ts";
+import Exams from "../model/Exam.ts";
+import {saveExam} from "../slice/ExamSlice.ts";
 
 // Define TypeScript type for Exam
 type Exam = {
@@ -15,6 +19,11 @@ export function Exam() {
     const [studentName, setStudentName] = useState<string>("");
     const [selectedExam, setSelectedExam] = useState<Exam | null>(null);
     const [registered, setRegistered] = useState<boolean>(false);
+
+    const dispatch = useDispatch<AppDispatch>();
+
+
+
     const [exams, setExams] = useState<Exam[]>([
         { id: 1, name: "Mathematics", date: "2025-03-20", time: "10:00 AM", hallNo: "A1", duration: "60 mins" },
         { id: 2, name: "Physics", date: "2025-03-22", time: "12:00 PM", hallNo: "B3", duration: "75 mins" },
@@ -51,16 +60,8 @@ export function Exam() {
             alert("Please fill all exam fields.");
             return;
         }
-        const newExamEntry: Exam = {
-            id: exams.length + 1,
-            name: newExam.name,
-            date: newExam.date,
-            time: newExam.time,
-            hallNo: newExam.hallNo,
-            duration: newExam.duration,
-        };
-        setExams([...exams, newExamEntry]);
-        setNewExam({ name: "", date: "", time: "", hallNo: "", duration: "" }); // Reset form
+        const exam = new Exams (newExam.name,newExam.date, newExam.time, newExam.hallNo,newExam.duration);
+        dispatch(saveExam(exam));
     };
 
     return (

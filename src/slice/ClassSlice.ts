@@ -11,7 +11,7 @@ const initialState:Classes[] = [];
 
 
 const api = axios.create({
-    baseURL: "http://localhost:3000/class",
+    baseURL: "http://localhost:3001/class",
 });
 
 
