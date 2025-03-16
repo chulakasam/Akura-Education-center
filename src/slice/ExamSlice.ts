@@ -12,7 +12,7 @@ const initialState:Exams[] = [];
 
 
 const api = axios.create({
-    baseURL: "http://localhost:3001/exam",
+    baseURL: "http://localhost:3000/exam",
 });
 
 
@@ -29,6 +29,18 @@ export const saveExam = createAsyncThunk(
     }
 );
 
+export const getAllExams=createAsyncThunk(
+    "exam/view",
+    async ()=>{
+        try{
+            const response = await api.get("/view");
+            return response.data;
+        }catch (error:any){
+            return error.response?.data || error.message;
+        }
+    }
+)
+
 
 
 const ExamSlice = createSlice({
@@ -42,6 +54,9 @@ const ExamSlice = createSlice({
         builder
             .addCase(saveExam.fulfilled, (state, action) => {
                 state.push(action.payload);
+            })
+            .addCase(getAllExams.fulfilled,(state, action)=>{
+                return action.payload;
             })
 
     }

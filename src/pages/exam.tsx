@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import bgImage from "../assets/edu-bg-img-02.jpg";
-import {useDispatch} from "react-redux";
-import {AppDispatch} from "../store/store.ts";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../store/store.ts";
+import { getAllExams, saveExam } from "../slice/ExamSlice.ts";
 import Exams from "../model/Exam.ts";
-import {saveExam} from "../slice/ExamSlice.ts";
 
 // Define TypeScript type for Exam
 type Exam = {
@@ -22,13 +22,8 @@ export function Exam() {
 
     const dispatch = useDispatch<AppDispatch>();
 
-
-
-    const [exams, setExams] = useState<Exam[]>([
-        { id: 1, name: "Mathematics", date: "2025-03-20", time: "10:00 AM", hallNo: "A1", duration: "60 mins" },
-        { id: 2, name: "Physics", date: "2025-03-22", time: "12:00 PM", hallNo: "B3", duration: "75 mins" },
-        { id: 3, name: "History", date: "2025-03-25", time: "09:30 AM", hallNo: "C2", duration: "45 mins" },
-    ]);
+    // Fetch exams from the Redux store
+    const exams = useSelector((state:any) => state.exam);
 
     // State for new exam inputs
     const [newExam, setNewExam] = useState<Partial<Exam>>({
@@ -48,6 +43,7 @@ export function Exam() {
         setSelectedExam(exam);
         setRegistered(true);
     };
+    console.log(exams)
 
     // Handle input change for new exam
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,9 +56,13 @@ export function Exam() {
             alert("Please fill all exam fields.");
             return;
         }
-        const exam = new Exams (newExam.name,newExam.date, newExam.time, newExam.hallNo,newExam.duration);
+        const exam = new Exams(newExam.name, newExam.date, newExam.time, newExam.hallNo, newExam.duration);
         dispatch(saveExam(exam));
     };
+
+    useEffect(() => {
+        dispatch(getAllExams()); // Fetch all exams from the store
+    }, [dispatch]);
 
     return (
         <div
@@ -89,19 +89,22 @@ export function Exam() {
                     />
                 </div>
 
-                {/* Exam List */}
-                <div className="space-y-4">
+                {/* Exam List as Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {exams.map((exam) => (
-                        <div key={exam.id} className="flex justify-between items-center p-4 bg-white bg-opacity-30 backdrop-blur-md rounded-lg shadow-md">
+                        <div
+                            key={exam.id}
+                            className="flex flex-col justify-between p-6 bg-white bg-opacity-30 backdrop-blur-md rounded-lg shadow-md"
+                        >
                             <div>
-                                <h3 className="text-xl font-semibold text-white">{exam.name}</h3>
-                                <p className="text-sm text-gray-200">Date: {exam.date}</p>
-                                <p className="text-sm text-gray-200">Time: {exam.time}</p>
-                                <p className="text-sm text-gray-200">Hall No: {exam.hallNo}</p>
+                                <h3 className="text-xl font-semibold text-white">{exam.examName}</h3>
+                                <p className="text-sm text-gray-200">Date: {exam.examDate}</p>
+                                <p className="text-sm text-gray-200">Time: {exam.examTime}</p>
+                                <p className="text-sm text-gray-200">Hall No: {exam.examHall}</p>
                                 <p className="text-sm text-gray-200">Duration: {exam.duration}</p>
                             </div>
                             <button
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition duration-200"
+                                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition duration-200"
                                 onClick={() => handleRegister(exam)}
                             >
                                 Register
