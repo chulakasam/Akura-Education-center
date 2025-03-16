@@ -3,10 +3,6 @@ import axios from "axios";
 
 import Classes from "../model/Classes.ts";
 
-
-
-
-
 const initialState:Classes[] = [];
 
 
@@ -41,13 +37,24 @@ export const getAllClasses=createAsyncThunk(
     }
 )
 
+
+export const deleteClass=createAsyncThunk(
+    "class/delete",
+    async (className:string,{rejectWithValue})=>{
+        try{
+            const response=await api.delete(`/delete/${className}`);
+            return response.data;
+        }catch (error:any){
+            return  rejectWithValue(error.response?.data || error.message);
+        }
+    }
+)
+
 const ClassSlice = createSlice({
     name: 'class',
     initialState: initialState,
     reducers: {
-
-
-    },
+        },
     extraReducers: (builder) => {
         builder
             .addCase(saveClass.fulfilled, (state, action) => {
@@ -57,7 +64,6 @@ const ClassSlice = createSlice({
                 console.log("Fetched Classes:", action.payload);
                 return action.payload;
             })
-
     }
 });
 
