@@ -41,6 +41,17 @@ export const getAllExams=createAsyncThunk(
     }
 )
 
+export const deleteExam=createAsyncThunk(
+    "exam/delete",
+    async (examName:string,{rejectWithValue})=>{
+        try {
+            const response = await api.delete(`/delete/${examName}`);
+            return response.data;
+        }catch (error:any){
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+)
 
 
 const ExamSlice = createSlice({

@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import bgImage from "../assets/edu-bg-img-02.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../store/store.ts";
-import { getAllExams, saveExam } from "../slice/ExamSlice.ts";
+import {deleteExam, getAllExams, saveExam} from "../slice/ExamSlice.ts";
 import Exams from "../model/Exam.ts";
 
-// Define TypeScript type for Exam
+
 type Exam = {
     id: number;
     name: string;
@@ -19,14 +19,15 @@ export function Exam() {
     const [studentName, setStudentName] = useState<string>("");
     const [selectedExam, setSelectedExam] = useState<Exam | null>(null);
     const [registered, setRegistered] = useState<boolean>(false);
+    const [editingExam, setEditingExam] = useState<Exam | null>(null);
 
     const dispatch = useDispatch<AppDispatch>();
 
-    // Fetch exams from the Redux store
-    const exams = useSelector((state:any) => state.exam);
 
-    // State for new exam inputs
-    const [newExam, setNewExam] = useState<Partial<Exam>>({
+    const exams = useSelector((state: any) => state.exam);
+
+
+    const [examData, setExamData] = useState<Partial<Exam>>({
         name: "",
         date: "",
         time: "",
@@ -34,7 +35,7 @@ export function Exam() {
         duration: "",
     });
 
-    // Handle registration
+
     const handleRegister = (exam: Exam) => {
         if (!studentName) {
             alert("Please enter your name before registering.");
@@ -43,25 +44,43 @@ export function Exam() {
         setSelectedExam(exam);
         setRegistered(true);
     };
-    console.log(exams)
 
-    // Handle input change for new exam
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNewExam({ ...newExam, [e.target.name]: e.target.value });
+        setExamData({ ...examData, [e.target.name]: e.target.value });
     };
 
-    // Handle new exam submission
+
     const addNewExam = () => {
-        if (!newExam.name || !newExam.date || !newExam.time || !newExam.hallNo || !newExam.duration) {
+        if (!examData.name || !examData.date || !examData.time || !examData.hallNo || !examData.duration) {
             alert("Please fill all exam fields.");
             return;
         }
-        const exam = new Exams(newExam.name, newExam.date, newExam.time, newExam.hallNo, newExam.duration);
+        const exam = new Exams(examData.name, examData.date, examData.time, examData.hallNo, examData.duration);
         dispatch(saveExam(exam));
+        setExamData({ name: "", date: "", time: "", hallNo: "", duration: "" }); // Reset form
     };
 
+
+    const handleRemoveExam = (examName: string) => {
+        if (window.confirm("Are you sure you want to delete this class?")) {
+            dispatch(deleteExam(examName)).then(() => {
+                dispatch(getAllExams());
+            });
+
+        }
+    };
+
+
+    const startEditingExam = (exam: Exam) => {
+        setEditingExam(exam);
+        setExamData(exam);
+    };
+
+
+
     useEffect(() => {
-        dispatch(getAllExams()); // Fetch all exams from the store
+        dispatch(getAllExams());
     }, [dispatch]);
 
     return (
@@ -69,14 +88,14 @@ export function Exam() {
             className="relative min-h-screen bg-cover bg-center flex items-center justify-center p-6"
             style={{ backgroundImage: `url(${bgImage})` }}
         >
-            {/* Dark Overlay */}
+
             <div className="absolute inset-0 bg-black bg-opacity-60"></div>
 
-            {/* Content */}
+
             <div className="relative bg-white bg-opacity-20 backdrop-blur-lg p-8 rounded-xl shadow-xl w-full max-w-3xl">
                 <h2 className="text-3xl font-bold text-white mb-6 text-center">Exam Registration</h2>
 
-                {/* Student Name Input */}
+
                 <div className="mb-4">
                     <label className="text-white font-medium block">Student Name:</label>
                     <input
@@ -89,8 +108,8 @@ export function Exam() {
                     />
                 </div>
 
-                {/* Exam List as Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
                     {exams.map((exam) => (
                         <div
                             key={exam.id}
@@ -103,24 +122,43 @@ export function Exam() {
                                 <p className="text-sm text-gray-200">Hall No: {exam.examHall}</p>
                                 <p className="text-sm text-gray-200">Duration: {exam.duration}</p>
                             </div>
-                            <button
-                                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition duration-200"
-                                onClick={() => handleRegister(exam)}
-                            >
-                                Register
-                            </button>
+
+                            <div className="mt-4 flex gap-2">
+                                <button
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition duration-200"
+                                    onClick={() => handleRegister(exam)}
+                                >
+                                    Register
+                                </button>
+
+                                <button
+                                    className="px-4 py-2 bg-yellow-500 text-white rounded-lg text-sm font-semibold hover:bg-yellow-600 transition"
+                                    onClick={() => startEditingExam(exam)}
+                                >
+                                    Edit
+                                </button>
+
+                                <button
+                                    className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition"
+                                    onClick={() => handleRemoveExam(exam.examName)}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>
 
-                {/* Add New Exam Form */}
+
                 <div className="mt-6 p-6 bg-white bg-opacity-40 backdrop-blur-md rounded-lg shadow-md">
-                    <h3 className="text-xl font-bold text-white mb-4">Add New Exam</h3>
+                    <h3 className="text-xl font-bold text-white mb-4">
+                        {editingExam ? "Edit Exam" : "Add New Exam"}
+                    </h3>
                     <div className="grid grid-cols-2 gap-4">
                         <input
                             type="text"
                             name="name"
-                            value={newExam.name}
+                            value={examData.name}
                             onChange={handleInputChange}
                             className="p-2 border rounded-lg"
                             placeholder="Exam Name"
@@ -128,21 +166,21 @@ export function Exam() {
                         <input
                             type="date"
                             name="date"
-                            value={newExam.date}
+                            value={examData.date}
                             onChange={handleInputChange}
                             className="p-2 border rounded-lg"
                         />
                         <input
                             type="time"
                             name="time"
-                            value={newExam.time}
+                            value={examData.time}
                             onChange={handleInputChange}
                             className="p-2 border rounded-lg"
                         />
                         <input
                             type="text"
                             name="hallNo"
-                            value={newExam.hallNo}
+                            value={examData.hallNo}
                             onChange={handleInputChange}
                             className="p-2 border rounded-lg"
                             placeholder="Hall No"
@@ -150,26 +188,21 @@ export function Exam() {
                         <input
                             type="text"
                             name="duration"
-                            value={newExam.duration}
+                            value={examData.duration}
                             onChange={handleInputChange}
                             className="p-2 border rounded-lg"
                             placeholder="Duration (e.g., 60 mins)"
                         />
                     </div>
                     <button
-                        className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition duration-200 w-full"
-                        onClick={addNewExam}
+                        className={`mt-4 px-4 py-2 rounded-lg text-sm font-semibold transition duration-200 w-full ${
+                            editingExam ? "bg-yellow-500 hover:bg-yellow-600" : "bg-green-600 hover:bg-green-700"
+                        } text-white`}
+                        onClick={editingExam ? handleUpdateExam : addNewExam}
                     >
-                        Add Exam
+                        {editingExam ? "Update Exam" : "Add Exam"}
                     </button>
                 </div>
-
-                {/* Confirmation Message */}
-                {registered && selectedExam && (
-                    <div className="mt-6 p-4 bg-green-600 text-white rounded-lg text-center">
-                        Successfully registered for <strong>{selectedExam.name}</strong> on {selectedExam.date} at {selectedExam.time} in Hall {selectedExam.hallNo}.
-                    </div>
-                )}
             </div>
         </div>
     );
