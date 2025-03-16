@@ -1,9 +1,10 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import bgImage from "../assets/edu-bg-img-02.jpg";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch} from "../store/store.ts";
-import {saveStudent} from "../slice/student-reducer.ts";
+import {getAllStudent, saveStudent} from "../slice/StudentSlice.ts";
 import Students from "../model/student.ts";
+import Classes from "../model/Classes.ts";
 
 export function Student() {
     const [studentName, setStudentName] = useState("");
@@ -14,6 +15,7 @@ export function Student() {
     const [mobileNo, setMobileNo] = useState("");
     const [guardianContactNo, setGuardianContactNo] = useState("");
     const dispatch = useDispatch<AppDispatch>();
+    const students=useSelector((state) => state.student);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -33,6 +35,10 @@ export function Student() {
         setMobileNo("");
         setGuardianContactNo("");
     };
+
+    useEffect(() => {
+        dispatch(getAllStudent())
+    },[dispatch])
 
     return (
         <div
@@ -142,6 +148,46 @@ export function Student() {
                         Add Student
                     </button>
                 </form>
+            </div>
+
+
+            <div className="w-full max-w-7xl mx-auto mt-8">
+                <h3 className="text-2xl font-bold text-white mb-4">All Students</h3>
+                <table className="min-w-full table-auto">
+                    <thead>
+                    <tr>
+                        <th className="px-4 py-2 text-left text-white">Student Name</th>
+                        <th className="px-4 py-2 text-left text-white">NIC No</th>
+                        <th className="px-4 py-2 text-left text-white">Date of Birth</th>
+                        <th className="px-4 py-2 text-left text-white">Address</th>
+                        <th className="px-4 py-2 text-left text-white">Email</th>
+                        <th className="px-4 py-2 text-left text-white">Mobile Phone</th>
+                        <th className="px-4 py-2 text-left text-white">Guardian Phone</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {Array.isArray(students) && students.length > 0 ? (
+                        students.map((stu: Students) => (
+                            <tr key={stu.studentName} className="border-b  hover:bg-gray-100">
+                                <td className="px-4 py-2 text-gray-700">{stu.studentName}</td>
+                                <td className="px-4 py-2 text-gray-700">{stu.nic}</td>
+                                <td className="px-4 py-2 text-gray-700">{stu.dob}</td>
+                                <td className="px-4 py-2 text-gray-400">{stu.address}</td>
+                                <td className="px-4 py-2 text-gray-400">{stu.email}</td>
+                                <td className="px-4 py-2 text-gray-400">{stu.mobilePhone}</td>
+                                <td className="px-4 py-2 text-gray-400">{stu.guardianphone}</td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={4} className="px-4 py-2 text-center text-gray-500">
+                                No students available
+                            </td>
+                        </tr>
+                    )}
+
+                    </tbody>
+                </table>
             </div>
         </div>
     );

@@ -28,6 +28,19 @@ export const saveStudent = createAsyncThunk(
     }
 );
 
+export const getAllStudent=createAsyncThunk(
+    "student/view",
+    async ()=>{
+        try{
+            const response = await api.get("/view");
+            return response.data;
+        }catch (error:any){
+            return error.response?.data || error.message;
+        }
+    }
+)
+
+
 
 const StudentSlice = createSlice({
     name: 'student',
@@ -40,6 +53,9 @@ const StudentSlice = createSlice({
         builder
             .addCase(saveStudent.fulfilled, (state, action) => {
                 state.push(action.payload);
+            })
+            .addCase(getAllStudent.fulfilled,(state, action)=>{
+                return action.payload;
             })
 
     }
