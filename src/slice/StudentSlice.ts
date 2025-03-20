@@ -38,7 +38,20 @@ export const getAllStudent=createAsyncThunk(
             return error.response?.data || error.message;
         }
     }
-)
+);
+
+export const deleteStudent=createAsyncThunk(
+    "student/delete",
+    async (email:string,{rejectWithValue})=>{
+        try {
+            const response = await api.delete(`/delete/${email}`);
+            return response.data;
+        }catch (error:any){
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
 
 
 

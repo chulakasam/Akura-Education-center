@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../store/store.ts";
 import {deleteClass, getAllClasses, saveClass} from "../slice/ClassSlice.ts";
 import Classes from "../model/Classes.ts";
+import Modal from "./Modal.tsx";
 
 export function Class() {
     const [className, setClassName] = useState("");
@@ -11,7 +12,7 @@ export function Class() {
     const [description, setDescription] = useState("");
     const [classDate, setClassDate] = useState("");
     const [editingClass, setEditingClass] = useState<Classes | null>(null);
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
 
     const subjects = ["Accounting", "Biology", "Chemistry", "Physics", "Economics", "Business Studies"];
@@ -68,6 +69,7 @@ export function Class() {
         setTeacherName(cls.teacherName);
         setDescription(cls.description);
         setClassDate(cls.date);
+        setIsModalOpen(true);
     };
 
     const handleDelete = (className: string) => {
@@ -79,11 +81,27 @@ export function Class() {
         }
     };
 
+
+
+    const handleModalSave = (updatedClass: any) => {
+        // Handle saving the updated class
+        dispatch(saveClass(updatedClass));
+        setIsModalOpen(false); // Close modal after saving
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false); // Close modal without saving
+    };
+
+
+
+
+
     return (
         <div className="min-h-screen flex flex-col items-center bg-cover bg-center p-6" style={{ backgroundImage: `url(${bgImage})` }}>
             <div className="bg-white bg-opacity-90 shadow-xl rounded-lg p-8 w-full max-w-lg transform transition-all duration-300">
                 <h2 className="text-3xl font-bold text-gray-900 text-left mb-6">
-                    {editingClass ? "Update Class" : "Add a New Class"}
+                     Add a New Class
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
@@ -139,7 +157,7 @@ export function Class() {
                         type="submit"
                         className="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition duration-200"
                     >
-                        {editingClass ? "Update Class" : "Add Class"}
+                          Add Class
                     </button>
                 </form>
             </div>
@@ -186,6 +204,18 @@ export function Class() {
                     </tbody>
                 </table>
             </div>
+<Modal
+    isOpen={isModalOpen}
+    onClose={handleModalClose}
+    onSave={handleModalSave}
+    className={className}
+    teacherName={teacherName}
+    description={description}
+    classDate={classDate}
+/>
         </div>
     );
 }
+
+
+
