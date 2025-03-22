@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import Exams from "../model/Exam.ts";
+import ExamRegistration from "../model/ExamRegistration.ts";
 
 
 
@@ -14,6 +15,10 @@ const initialState:Exams[] = [];
 const api = axios.create({
     baseURL: "http://localhost:3000/exam",
 });
+const api2 = axios.create({
+    baseURL: "http://localhost:3000/examRegistration",
+});
+
 
 
 
@@ -52,6 +57,24 @@ export const deleteExam=createAsyncThunk(
         }
     }
 )
+
+export const examRegister=createAsyncThunk(
+    "examRegistration/add",
+    async (examRegistration:ExamRegistration,{rejectWithValue})=>{
+        try{
+            const response = await api2.post("/add", examRegistration);
+            return response.data;
+        }catch (error:any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+
+)
+
+
+
+
+
 
 
 const ExamSlice = createSlice({
