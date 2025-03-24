@@ -13,7 +13,7 @@ export function Navigation() {
 
                 {/* Desktop Navigation */}
                 <ul className="hidden md:flex space-x-6">
-                    {["DashBoard", "Student", "Class", "Exam"].map((item, index) => (
+                    {["DashBoard", "Student", "Class", "Exam","Payment"].map((item, index) => (
                         <li key={index}>
                             <Link
                                 to={item === "DashBoard" ? "/" : `/${item.toLowerCase()}`}
@@ -50,7 +50,7 @@ export function Navigation() {
             {/* Mobile Navigation Dropdown */}
             {isOpen && (
                 <ul className="md:hidden bg-teal-800 py-2">
-                    {["DashBoard", "Student", "Class", "Exam"].map((item, index) => (
+                    {["DashBoard", "Student", "Class", "Exam","Payment"].map((item, index) => (
                         <li key={index} className="px-6 py-2 border-b border-teal-700">
                             <Link
                                 to={item === "DashBoard" ? "/" : `/${item.toLowerCase()}`}

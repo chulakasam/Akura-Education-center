@@ -7,6 +7,7 @@ import {Dashboard} from "./pages/dashboard.tsx";
 import {Student} from "./pages/student.tsx";
 import {Class} from "./pages/class.tsx";
 import {Exam} from "./pages/exam.tsx";
+import {Payment} from "./pages/payment.tsx";
 
 
 
@@ -24,6 +25,7 @@ function App() {
                 {path :'/student',element :<Student/>},
                 {path :'/class',element :<Class/>},
                 {path :'/exam',element :<Exam/>},
+                {path :'/payment',element :<Payment/>},
             ]
         },
 
