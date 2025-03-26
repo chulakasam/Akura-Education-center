@@ -2,9 +2,19 @@ import { FaUsers, FaBook, FaChalkboardTeacher, FaClipboardList, FaCalendarAlt, F
 import { motion } from "framer-motion";
 import bgImage from "../assets/edu-bg-img -01.jpg";
 import { useState, useEffect } from "react";
+import {useNavigate} from "react-router-dom";
 
 export function Dashboard() {
     const [time, setTime] = useState(new Date());
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        // Optionally clear authentication state
+        localStorage.removeItem("token"); // Example if using JWT
+        navigate("/signin"); // Redirect to Sign-in form
+    };
+
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -25,9 +35,14 @@ export function Dashboard() {
 
                 <header className="bg-white bg-opacity-20 backdrop-blur-lg shadow-md rounded-xl p-4 flex justify-between items-center border border-white border-opacity-10">
                     <h1 className="text-2xl font-semibold">📊 Dashboard</h1>
-                    <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition shadow-lg">
+
+                    <button
+                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition shadow-lg"
+                        onClick={handleLogout}
+                    >
                         Logout
                     </button>
+
                 </header>
 
                 <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">

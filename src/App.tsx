@@ -8,6 +8,9 @@ import {Student} from "./pages/student.tsx";
 import {Class} from "./pages/class.tsx";
 import {Exam} from "./pages/exam.tsx";
 import {Payment} from "./pages/payment.tsx";
+import AuthLayout from "./components/AuthLayOut.tsx";
+import SignIn from "./pages/SignIn.tsx";
+import {Signup} from "./pages/SignUp.tsx";
 
 
 
@@ -15,13 +18,20 @@ import {Payment} from "./pages/payment.tsx";
 
 function App() {
     const routes=createBrowserRouter([
-
+        {
+            path: "",
+            element: <AuthLayout />,
+            children: [
+                { path: "/signin", element: <SignIn /> },
+                { path: "", element: <Signup /> },
+            ],
+        },
 
         {
             path:'',
             element:<RootLayOut/>,
             children:[
-                {path :'',element :<Dashboard/>},
+                {path :'/dashboard',element :<Dashboard/>},
                 {path :'/student',element :<Student/>},
                 {path :'/class',element :<Class/>},
                 {path :'/exam',element :<Exam/>},

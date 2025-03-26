@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
-import ExamPayment from "../model/ExamPayment.ts";
+
 import ClassPayment from "../model/ClassPayment.ts";
 
 
@@ -10,25 +10,25 @@ import ClassPayment from "../model/ClassPayment.ts";
 
 
 
-const initialState1:ExamPayment[] = [];
-const initialState2:ClassPayment[] = [];
+
+const initialState:ClassPayment[] = [];
+
 
 
 const api = axios.create({
+
     baseURL: "http://localhost:3000/classPayment",
 });
-const api2 = axios.create({
-    baseURL: "http://localhost:3000/examPayment",
-});
 
 
 
 
-export const saveExamPayment = createAsyncThunk(
-    "exam/add",
-    async (exams:Exams, { rejectWithValue }) => {
+
+export const saveClassPayment = createAsyncThunk(
+    "classPayment/add",
+    async (classPayment:ClassPayment, { rejectWithValue }) => {
         try {
-            const response = await api.post("/add", exams);
+            const response = await api.post("/add",classPayment);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || error.message);
@@ -44,25 +44,24 @@ export const saveExamPayment = createAsyncThunk(
 
 
 
-const ExamSlice = createSlice({
+const ClassPaymentSlice = createSlice({
     name: 'exam',
     initialState: initialState,
+
     reducers: {
 
 
     },
     extraReducers: (builder) => {
         builder
-            .addCase(saveExam.fulfilled, (state, action) => {
+            .addCase(saveClassPayment.fulfilled, (state, action) => {
                 state.push(action.payload);
             })
-            .addCase(getAllExams.fulfilled,(state, action)=>{
-                return action.payload;
-            })
+
 
     }
 });
 
 
 
-export default ExamSlice.reducer;
+export default ClassPaymentSlice.reducer;
