@@ -4,8 +4,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch} from "../store/store.ts";
 import {getAllStudent, saveStudent, deleteStudent} from "../slice/StudentSlice.ts";
 import Students from "../model/student.ts";
-import Classes from "../model/Classes.ts";
-import {deleteExam, getAllExams} from "../slice/ExamSlice.ts";
+import Swal from 'sweetalert2';
+
+
 
 export function Student() {
     const [studentName, setStudentName] = useState("");
@@ -21,10 +22,16 @@ export function Student() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Student Data:", { studentName, nic, dob, address, email, mobileNo, guardianContactNo });
-        alert("Student added successfully!");
+
 
         const student = new Students(studentName, Number(nic), dob, address, email, Number(mobileNo), Number(guardianContactNo));
         dispatch(saveStudent(student));
+        Swal.fire({
+            title: "Success!",
+            text: "Student added successfully!",
+            icon: "success",
+            confirmButtonText: "OK"
+        });
 
         setStudentName("");
         setNic("");
@@ -36,12 +43,29 @@ export function Student() {
     };
 
      const handleDelete = (email:string) => {
-         if (window.confirm("Are you sure you want to delete this student?")) {
-             dispatch(deleteStudent(email)).then(() => {
-                 dispatch(getAllStudent());
-             });
+         // if (window.confirm("Are you sure you want to delete this student?")) {
+         //     dispatch(deleteStudent(email)).then(() => {
+         //         dispatch(getAllStudent());
+         //     });
+         //
+         // }
+         Swal.fire({
+             title: "Are you sure?",
+             text: "You won’t be able to revert this!",
+             icon: "warning",
+             showCancelButton: true,
+             confirmButtonColor: "#d33",
+             cancelButtonColor: "#3085d6",
+             confirmButtonText: "Yes, delete it!"
+         }).then((result) => {
+             if (result.isConfirmed) {
+                 dispatch(deleteStudent(email)).then(() => {
+                     dispatch(getAllStudent());
+                     Swal.fire("Deleted!", "The student has been removed.", "success");
+                 });
+             }
+         });
 
-         }
      };
 
     useEffect(() => {
