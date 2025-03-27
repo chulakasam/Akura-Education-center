@@ -5,6 +5,8 @@ import { AppDispatch } from "../store/store.ts";
 import { deleteExam, examRegister, getAllExams, saveExam } from "../slice/ExamSlice.ts";
 import Exams from "../model/Exam.ts";
 import ExamRegistration from "../model/ExamRegistration.ts";
+import Swal from 'sweetalert2';
+
 
 type Exam = {
     id: number;
@@ -40,6 +42,13 @@ export function Exam() {
         setRegistered(true);
         const examRegistrationDetails = new ExamRegistration(Number(nic),examName);
         dispatch(examRegister(examRegistrationDetails));
+        Swal.fire({
+            title: "Success!",
+            text: "Your exam registration successfully!",
+            icon: "success",
+            confirmButtonText: "OK"
+        });
+
     };
 
     const addNewExam = () => {
@@ -49,6 +58,18 @@ export function Exam() {
         }
         const newExam = new Exams(examName, examDate, examTime, examHall, examDuration);
         dispatch(saveExam(newExam));
+
+        Swal.fire({
+            title: "Success!",
+            text: "Exam added successfully!",
+            icon: "success",
+            confirmButtonText: "OK"
+        });
+
+
+
+
+
 
         // Reset fields
         setExamName("");
