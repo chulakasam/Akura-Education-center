@@ -7,6 +7,7 @@ import ExamPayment from "../model/ExamPayment.ts";
 import ClassPayment from "../model/ClassPayment.ts";
 import {saveClassPayment} from "../slice/ClassPaymentSlice.ts";
 import {saveExamPayment} from "../slice/ExamPaymentSlice.ts";
+import Swal from 'sweetalert2';
 
 export function Payment() {
     const [students, setStudents] = useState([]);
@@ -64,12 +65,27 @@ export function Payment() {
 
     const handleExamPayment = async () => {
         const examPayment = new ExamPayment(examFormData.studentName,examFormData.studentId,examFormData.examName,Number(examFormData.amount),examFormData.paymentDate);
-        dispatch(saveExamPayment(examPayment))
+        dispatch(saveExamPayment(examPayment));
+        Swal.fire({
+            title: "Success!",
+            text: "Exam Payment done!",
+            icon: "success",
+            confirmButtonText: "OK"
+        });
+
+
     };
 
     const handleClassPayment = async () => {
         const classPayment = new ClassPayment(classFormData.studentName,classFormData.studentId,classFormData.className,Number(classFormData.amount),classFormData.paymentDate);
-       dispatch(saveClassPayment(classPayment))
+       dispatch(saveClassPayment(classPayment));
+        Swal.fire({
+            title: "Success!",
+            text: "Monthly Class Payment Done!",
+            icon: "success",
+            confirmButtonText: "OK"
+        });
+
     };
 
     return (
