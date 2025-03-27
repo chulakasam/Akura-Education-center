@@ -5,6 +5,8 @@ import { AppDispatch } from "../store/store.ts";
 import {deleteClass, getAllClasses, saveClass} from "../slice/ClassSlice.ts";
 import Classes from "../model/Classes.ts";
 import Modal from "./Modal.tsx";
+import Swal from 'sweetalert2';
+
 
 export function Class() {
     const [className, setClassName] = useState("");
@@ -15,7 +17,7 @@ export function Class() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
 
-    const subjects = ["Accounting", "Biology", "Chemistry", "Physics", "Economics", "Business Studies"];
+    const subjects = ["Accounting", "Biology", "Chemistry", "Physics", "Economics", "Business Studies","Applied Maths"];
 
 
     const classes = useSelector((state: any) => state.class);
@@ -54,7 +56,13 @@ export function Class() {
             dispatch(saveClass(newClass));
         }
 
-        alert("Class saved successfully!");
+        Swal.fire({
+            title: "Success!",
+            text: "Class added successfully!",
+            icon: "success",
+            confirmButtonText: "OK"
+        });
+
 
 
         setClassName("");
@@ -73,12 +81,34 @@ export function Class() {
     };
 
     const handleDelete = (className: string) => {
-        if (window.confirm("Are you sure you want to delete this class?")) {
-            dispatch(deleteClass(className)).then(() => {
-                dispatch(getAllClasses());
-            });
+        // if (window.confirm("Are you sure you want to delete this class?")) {
+        //     dispatch(deleteClass(className)).then(() => {
+        //         dispatch(getAllClasses());
+        //     });
+        //
+        // }
 
-        }
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won’t be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                dispatch(deleteClass(className)).then(() => {
+                    dispatch(getAllClasses());
+                    Swal.fire("Deleted!", "The Class has been removed.", "success");
+                });
+            }
+        });
+
+
+
+
     };
 
 
